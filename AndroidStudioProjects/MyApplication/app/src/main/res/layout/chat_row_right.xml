@@ -11,12 +11,15 @@
         android:id="@+id/chat_text_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/select_photo_rounded"
         android:padding="16dp"
         android:text="TextView"
+        android:textIsSelectable="true"
         app:layout_constraintEnd_toStartOf="@+id/profileImgRight"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/chat_row_right_time"
         app:layout_constraintTop_toTopOf="parent" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -28,5 +31,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/kaplanteb" />
+
+    <TextView
+        android:id="@+id/chat_row_right_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dummy"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

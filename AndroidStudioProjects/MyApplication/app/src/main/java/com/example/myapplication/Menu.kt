@@ -1,7 +1,9 @@
 package com.example.myapplication
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +14,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.collection.LLRBNode
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
@@ -55,7 +58,6 @@ class Menu : AppCompatActivity() {
         val ref = database.getReference("/latest-messages/$from")
         ref.addChildEventListener(object : ChildEventListener {
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
             }
 
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
@@ -73,13 +75,10 @@ class Menu : AppCompatActivity() {
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
             }
-
 
         })
     }
@@ -102,7 +101,19 @@ class Menu : AppCompatActivity() {
     class LatestMsgRow(val chatMsg: Message) : Item<GroupieViewHolder>() {
         var chatPartnerUser: User? = null
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-            viewHolder.itemView.latest_msg_text.text = chatMsg.data
+            Log.d("menu","latest msg type = ${chatMsg.type}")
+            if(chatMsg.type == "text"){
+                viewHolder.itemView.latest_msg_text.text = chatMsg.data
+            }
+            if(chatMsg.type == "img"){
+                viewHolder.itemView.latest_msg_text.text = "Image Data"
+                viewHolder.itemView.latest_msg_text.setTextColor(Color.parseColor("#571954"))
+            }
+            if(chatMsg.type == "map"){
+                viewHolder.itemView.latest_msg_text.text = "Geo Data"
+                viewHolder.itemView.latest_msg_text.setTextColor(Color.parseColor("#070952"))
+            }
+
             val seconds = (chatMsg.time / 1000) % 60
             seconds.toInt().toString()
             val minutes = ((chatMsg.time / (60*1000)) % 60)

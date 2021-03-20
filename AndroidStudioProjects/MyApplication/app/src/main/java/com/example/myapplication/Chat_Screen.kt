@@ -38,12 +38,14 @@ import kotlinx.android.synthetic.main.chat_row.view.*
 import kotlinx.android.synthetic.main.chat_row_img.view.*
 import kotlinx.android.synthetic.main.chat_row_img_right.view.*
 import kotlinx.android.synthetic.main.chat_row_map.view.*
+import kotlinx.android.synthetic.main.chat_row_map_right.view.*
 import kotlinx.android.synthetic.main.chat_row_right.view.*
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.timer
 
 
 class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
-    val adapter = GroupAdapter<GroupieViewHolder>()
     var userTo: User? = null
     private lateinit var mMap: GoogleMap
    private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -71,6 +73,8 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat__screen)
@@ -85,7 +89,6 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
         userTo = intent.getParcelableExtra<User>(new_message.USER_KEY)
         supportActionBar?.title = userTo?.username.toString()
 
-        val adapter = GroupAdapter<GroupieViewHolder>()
 
         send_button.setOnClickListener {
             sendMsgToFirebase()
@@ -96,13 +99,29 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
             startActivityForResult(intent, 0)
         }
         adapter.setOnItemClickListener { item, view ->
+            Log.d("adapter","click girdi")
             val intent = Intent(this, MapsActivity::class.java)
             Log.d("adapter","click girdi")
+            if(item is ChatRowMap){
             val row = item as ChatRowMap
-            intent.putExtra("Long",row.longitude)
-            intent.putExtra("Lat",row.latitude)
-            startActivity(intent)
-        }
+                if(row.latitude != null){
+                    intent.putExtra("username",currentUser?.username)
+                    intent.putExtra("Long",row.longitude)
+                    intent.putExtra("Lat",row.latitude)
+                    startActivity(intent)}
+            }
+            if (item is ChatRowMapRight){
+                val row = item as ChatRowMapRight
+                if(row.latitude != null){
+                    intent.putExtra("username", userTo?.username)
+                    intent.putExtra("Long",row.longitude)
+                    intent.putExtra("Lat",row.latitude)
+                    startActivity(intent)}
+            }
+
+            }
+
+
         send_location.setOnClickListener {
             Log.d("location","girdik")
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -147,6 +166,7 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
 
         chatListener()
     }
+    val adapter = GroupAdapter<GroupieViewHolder>()
     private fun local(latitudeFinal: String, longitudeFinal: String): String {
         return "https://maps.googleapis.com/maps/api/staticmap?center=$latitudeFinal,$longitudeFinal&zoom=18&size=280x280&markers=color:red|$latitudeFinal,$longitudeFinal"
     }
@@ -180,12 +200,17 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
         toRef.setValue(chatMsg).addOnSuccessListener {
             listview_chat_screen.scrollToPosition(adapter.itemCount - 1)
         }
+        val latestMsg = database.getReference("/latest-messages/$from/$to")
+        val latestMsgSender = database.getReference("/latest-messages/$to/$from")
+        latestMsg.setValue(chatMsg)
+        latestMsgSender.setValue(chatMsg)
     }
     var selectedPhotoUri: Uri? = null
     private fun uploadImageToFirebase(){
 
         if(selectedPhotoUri == null) return
         val filename = UUID.randomUUID().toString()
+
         val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
 
         ref.putFile(selectedPhotoUri!!).addOnSuccessListener {
@@ -214,6 +239,10 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
                 val uid = FirebaseAuth.getInstance().uid
                 refToChatImg.setValue(chatMsg).addOnSuccessListener {
                     //adapter.add(ChatRowImg(urimiz, currentUser!!))
+                    val latestMsg = database.getReference("/latest-messages/$from/$to")
+                    val latestMsgSender = database.getReference("/latest-messages/$to/$from")
+                    latestMsg.setValue(chatMsg)
+                    latestMsgSender.setValue(chatMsg)
                     Log.d("uploadimgto", "Sent msg to firebaseimg adapter ekledik bakalim")
                     listview_chat_screen.scrollToPosition(adapter.itemCount - 1)
                 }
@@ -295,25 +324,27 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
                 }
                 Log.d("chat listener", "${msg.type} type bu ")
                 if (msg.type == "text") {
+                    val time = clockCu(msg)
                     if (msg != null) {
                         if (msg.from == FirebaseAuth.getInstance().uid) {
-                            adapter.add(ChatRow(msg.data, currentUser!!))
+                            adapter.add(ChatRow(msg.data, currentUser!!,time))
                             Log.d("chat", "yollanan")
                         } else {
                             //val userFr = intent.getParcelableExtra<User>(new_message.USER_KEY)
-                            adapter.add(ChatRowGelen(msg.data, userTo!!))
+                            adapter.add(ChatRowGelen(msg.data, userTo!!,time))
                             Log.d("chat", "gelen")
                         }
 
                     }
                 } else if (msg.type == "img") {
+                    val time = clockCu(msg)
                     if (msg != null) {
                         if (msg.from == FirebaseAuth.getInstance().uid) {
                             Log.d("yollanan img chat listener", "${msg.data} data bu")
-                            adapter.add(ChatRowImg(msg.data, currentUser!!))
+                            adapter.add(ChatRowImg(msg.data, currentUser!!,time))
                         } else {
                             //val userFr = intent.getParcelableExtra<User>(new_message.USER_KEY)
-                            adapter.add(ChatRowImgRight(msg.data, userTo!!))
+                            adapter.add(ChatRowImgRight(msg.data, userTo!!,time))
                             Log.d("chat", "gelenimg")
                             Log.d("chat", "${userTo!!.username} userto bu")
                         }
@@ -325,14 +356,14 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
                         val index = msg.data.indexOf(",")
                         val lat = msg.data.substring(0,index).toDouble()
                         val long = msg.data.substring(index+1).toDouble()
+                        val time = clockCu(msg)
 
                         if (msg.from == FirebaseAuth.getInstance().uid) {
-                            adapter.add(ChatRowMap(lat,long, currentUser!!))
+                            adapter.add(ChatRowMap(lat,long, currentUser!!,time))
                         } else {
-
+                            adapter.add(ChatRowMapRight(lat,long,userTo!!,time))
                         }
                     }
-
                 }
                 listview_chat_screen.scrollToPosition(adapter.itemCount - 1)
 
@@ -358,12 +389,37 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
 
     }
 }
+private fun getDate(milliSeconds: Long, dateFormat: String?): String? {
+    // Create a DateFormatter object for displaying date in specified format.
+    val formatter = SimpleDateFormat(dateFormat)
 
-class ChatRowMap(val latitude: Double,val longitude: Double,val user1: User)  : Item<GroupieViewHolder>() {
+    // Create a calendar object that will convert the date and time value in milliseconds to date.
+    val calendar: Calendar = Calendar.getInstance()
+    calendar.setTimeInMillis(milliSeconds)
+    return formatter.format(calendar.getTime())
+}
+private fun clockCu(chatMsg: Message) : String{
+    val seconds = (chatMsg.time / 1000) % 60
+    seconds.toInt().toString()
+    val minutes = ((chatMsg.time / (60*1000)) % 60)
+    val hours = ((chatMsg.time / (60*60*1000))%24)
+    val time = "${hours.toInt()}:${minutes.toInt()}:${seconds.toInt()}"
+
+    // val timer = DateFormat.getDateInstance().format(time)
+    val timer = getDate(chatMsg.time,"dd/MM/yyyy")
+    val saatci = "${hours+3}:$minutes"
+    val rolex = "$timer $saatci"
+
+    return rolex.toString()
+}
+
+class ChatRowMap(val latitude: Double,val longitude: Double,val user1: User,val time: String)  : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         var uri = currentUser!!.profileImg
         val img = viewHolder.itemView.profileImgMap
         Picasso.get().load(uri).into(img)
+
+        viewHolder.itemView.map_text_saat.text = time
     }
 
     override fun getLayout(): Int {
@@ -372,13 +428,31 @@ class ChatRowMap(val latitude: Double,val longitude: Double,val user1: User)  : 
 }
 
 
-class ChatRow(val text: String, val user1: User) : Item<GroupieViewHolder>() {
+class ChatRowMapRight(val latitude: Double,val longitude: Double,val user1: User,val time: String)  : Item<GroupieViewHolder>() {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        var uri = user1!!.profileImg
+        val img = viewHolder.itemView.profileImgMapRight
+        Picasso.get().load(uri).into(img)
+
+        viewHolder.itemView.map_text_saat_right.text = time
+
+    }
+
+    override fun getLayout(): Int {
+        return R.layout.chat_row_map_right
+    }
+}
+
+
+class ChatRow(val text: String, val user1: User,val time: String) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_text.text = text
+        viewHolder.itemView.chat_row_saat.text = time
 
         var uri = currentUser!!.profileImg
         val img = viewHolder.itemView.profileImg
         Picasso.get().load(uri).into(img)
+
     }
 
     override fun getLayout(): Int {
@@ -386,12 +460,12 @@ class ChatRow(val text: String, val user1: User) : Item<GroupieViewHolder>() {
     }
 }
 
-class ChatRowImg(val text: String, val user1: User) : Item<GroupieViewHolder>() {
+class ChatRowImg(val text: String, val user1: User,val time: String) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         var uri_img = text
         val img_img = viewHolder.itemView.imageView_chat
         Picasso.get().load(uri_img).into(img_img)
-        viewHolder.itemView.img_text_saat.text = "09:41"
+        viewHolder.itemView.img_text_saat.text = time
         Log.d("chatrowimgright", "${user1.username} userimiz bu bakalim tutmus mu yollanan")
         var uri = currentUser!!.profileImg
         val img = viewHolder.itemView.profileImgImg
@@ -403,12 +477,12 @@ class ChatRowImg(val text: String, val user1: User) : Item<GroupieViewHolder>() 
     }
 }
 
-class ChatRowImgRight(val text: String, val user1: User) : Item<GroupieViewHolder>() {
+class ChatRowImgRight(val text: String, val user1: User,val time: String) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         var uri_img = text
         val img_img = viewHolder.itemView.imageView_chat_right
         Picasso.get().load(uri_img).into(img_img)
-        viewHolder.itemView.img_text_saat_right.text = "09:41"
+        viewHolder.itemView.img_text_saat_right.text = time
 
         Log.d("chatrowimgright", "${user1.username} userimiz bu bakalim tutmus mu")
 
@@ -422,9 +496,10 @@ class ChatRowImgRight(val text: String, val user1: User) : Item<GroupieViewHolde
     }
 }
 
-class ChatRowGelen(val text: String, val user: User) : Item<GroupieViewHolder>() {
+class ChatRowGelen(val text: String, val user: User,val time: String) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_text_right.text = text
+        viewHolder.itemView.chat_row_right_time.text = time
         var uri = user.profileImg
         val img = viewHolder.itemView.profileImgRight
         Picasso.get().load(uri).into(img)
