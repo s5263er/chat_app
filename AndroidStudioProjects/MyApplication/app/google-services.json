@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "147722573695",
+    "project_id": "ceptechat",
+    "storage_bucket": "ceptechat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147722573695:android:0b36704b07d164764c2c4a",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "147722573695-9lrh3t7ru5sds4e2adhelp524j7di02q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdWOxT9sEAk9Cz7BMhq2vYrABEF4WJ48Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "147722573695-9lrh3t7ru5sds4e2adhelp524j7di02q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
