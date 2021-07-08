@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -43,25 +44,37 @@ class Register: AppCompatActivity()
 
 
         val uid = FirebaseAuth.getInstance().uid ?: ""
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
+        val ref = database.getReference("/users/$uid")
 
         val user = User(uid, register_username.text.toString())
 
-        Log.d("TAG", "Buraya girdi mi ${user.uid}")
 
         ref.setValue(user).addOnSuccessListener {
                 Log.d("TAG", "Finally we saved the user to Firebase Database")
             }
             .addOnFailureListener {
                 Log.d("TAG", "Failed to set value to database: ${it.message}")
-            }
+            }.addOnFailureListener {
+                    Log.d("TAG", "Failed to set value to database: ${it.message}")
+                }.addOnCanceledListener {
+                    Log.d("TAG", "Canceled")
+                }.addOnCompleteListener {
+                    Log.d("TAG", "Complete girdik")
+                }
     }
 
     private fun register() {
-        val email = register_email.text.toString()
-        val username = register_username.text.toString()
-        val password = register_pass1.text.toString()
-        val password2 = register_pass2.text.toString()
+
+        val etUsername = findViewById<TextInputEditText>(R.id.register_username)
+        val etEmail = findViewById<TextInputEditText>(R.id.register_email)
+        val etPass1 = findViewById<TextInputEditText>(R.id.register_pass1)
+        val etPass2 = findViewById<TextInputEditText>(R.id.register_pass2)
+        val email = etEmail.text.toString()
+        val username = etUsername.text.toString()
+        val password = etPass1.text.toString()
+        val password2 = etPass2.text.toString()
+        
         if(password != password2)
         {
             Toast.makeText(this, "Passwords must match", Toast.LENGTH_SHORT).show()
@@ -69,30 +82,7 @@ class Register: AppCompatActivity()
         }
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password).addOnCompleteListener {
             if(it.isSuccessful == false) return@addOnCompleteListener
-            else{
-
-                val db = Firebase.database
-                val myRef = db.getReference("message")
-
-                myRef.setValue("Hello, World!").addOnCanceledListener { Log.d("as","${myRef.setValue("Hello, World!").addOnFailureListener { it.message }}") }
-                Log.d("sa","${myRef.setValue("Hello, World!").addOnFailureListener { it.message }}")
-                Log.d("sa","${myRef.setValue("Hello, World!").addOnFailureListener { it.localizedMessage }}")
-                Log.d("sa","${myRef.setValue("Hello, World!").addOnFailureListener { it.stackTraceToString() }}")
-                Log.d("sa","${myRef.setValue("Hello, World!").addOnFailureListener { it.cause}}")
-                database = FirebaseDatabase.getInstance().getReference("users")
-                val User = User(it.result?.user!!.uid,username)
-                database.child(it.result?.user!!.uid).setValue(User).addOnSuccessListener {
-                    Toast.makeText(this,"Successfully Saved",Toast.LENGTH_SHORT).show()
-
-                }.addOnFailureListener{
-                    Log.d("nedenmis", "${it.message}")
-
-                    Toast.makeText(this,"Failed",Toast.LENGTH_SHORT).show()
-
-
-                }
-                Log.d("Register", "Successful ${it.result?.user?.uid}")}
-
+            else{ Log.d("Register", "Successful ${it.result?.user?.uid}")}
         }.addOnFailureListener { exception ->
             Toast.makeText(applicationContext,exception.localizedMessage,Toast.LENGTH_LONG).show()
         }

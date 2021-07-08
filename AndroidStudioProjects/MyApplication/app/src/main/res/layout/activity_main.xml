@@ -56,7 +56,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/login_username"
-            android:layout_width="302dp"
+            android:layout_width="300dp"
             android:layout_height="50dp"
             android:background="@android:color/white"
             android:ems="10"

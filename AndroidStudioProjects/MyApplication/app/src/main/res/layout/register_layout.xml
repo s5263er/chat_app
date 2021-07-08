@@ -40,49 +40,72 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/kaplanteb" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        >
 
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/register_username"
-            android:background="@android:color/white"
             android:layout_width="300dp"
             android:layout_height="50dp"
+            android:background="@android:color/white"
             android:ems="10"
             android:hint="Username"
             android:inputType="textPersonName"
             android:paddingLeft="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-             />
+            android:layout_gravity="center"></com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
 
 
-        <EditText
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/register_email"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:background="@android:color/white"
             android:ems="10"
-            android:hint="E-mail"
+            android:hint="Username"
             android:inputType="textEmailAddress"
             android:paddingLeft="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.6"
-             />
+            android:layout_gravity="center"></com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.7"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/black"
+        >
 
-
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/register_pass1"
             android:layout_width="300dp"
             android:layout_height="50dp"
@@ -91,17 +114,23 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:paddingLeft="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.7"
-             />
+            android:layout_gravity="center"></com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/black"
+        >
 
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/register_pass2"
             android:layout_width="300dp"
             android:layout_height="50dp"
@@ -110,22 +139,8 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:paddingLeft="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.8" />
-
-
-
-
-
-
-
-
-
-
+            android:layout_gravity="center"></com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <Button
