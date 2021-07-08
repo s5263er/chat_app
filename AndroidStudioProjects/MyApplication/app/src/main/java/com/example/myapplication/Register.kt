@@ -1,11 +1,12 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import com.example.myapplication.databinding.ActivityMainBinding
+//import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.register_layout.*
 class Register: AppCompatActivity()
 {
     private lateinit var navController: NavController
-    private lateinit var binding : ActivityMainBinding
+    //private lateinit var binding : ActivityMainBinding
     private lateinit var database : DatabaseReference
 
     //val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
@@ -34,34 +35,33 @@ class Register: AppCompatActivity()
 
         register_button.setOnClickListener {
             register()
-            saveUserToFirebaseDatabase()
+
         }
     }
 
     //class User(val uid: String, val username: String, val profileImageUrl: String)
 
-    private fun saveUserToFirebaseDatabase() {
+
+    private fun saveUserToFirebaseDatabase(uid2: String) {
 
 
-        val uid = FirebaseAuth.getInstance().uid ?: ""
+        val uid = FirebaseAuth.getInstance().uid
         val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
-        val ref = database.getReference("/users/$uid")
+        val ref = database.getReference("/users/$uid2")
 
-        val user = User(uid, register_username.text.toString())
+        val user = User(uid2, register_username.text.toString())
 
 
         ref.setValue(user).addOnSuccessListener {
                 Log.d("TAG", "Finally we saved the user to Firebase Database")
+            val intent = Intent(this, Menu::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+
             }
             .addOnFailureListener {
                 Log.d("TAG", "Failed to set value to database: ${it.message}")
-            }.addOnFailureListener {
-                    Log.d("TAG", "Failed to set value to database: ${it.message}")
-                }.addOnCanceledListener {
-                    Log.d("TAG", "Canceled")
-                }.addOnCompleteListener {
-                    Log.d("TAG", "Complete girdik")
-                }
+            }
     }
 
     private fun register() {
@@ -82,7 +82,13 @@ class Register: AppCompatActivity()
         }
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password).addOnCompleteListener {
             if(it.isSuccessful == false) return@addOnCompleteListener
-            else{ Log.d("Register", "Successful ${it.result?.user?.uid}")}
+            else{
+                val uidyolla = FirebaseAuth.getInstance().uid
+                Log.d("Register", "Successful ${it.result?.user?.uid}")
+                if (uidyolla != null) {
+                    saveUserToFirebaseDatabase(uidyolla)
+                }
+            }
         }.addOnFailureListener { exception ->
             Toast.makeText(applicationContext,exception.localizedMessage,Toast.LENGTH_LONG).show()
         }
