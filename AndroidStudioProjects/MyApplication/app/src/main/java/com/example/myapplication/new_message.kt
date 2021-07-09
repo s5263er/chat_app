@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieAdapter
 
@@ -18,7 +19,7 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.message_row_user.view.*
 import kotlinx.android.synthetic.main.new_message_layout.*
-
+import kotlinx.android.synthetic.main.select_photo.view.*
 
 
 class new_message : AppCompatActivity() {
@@ -66,6 +67,10 @@ class new_message : AppCompatActivity() {
 class UserItem(val user: User): Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.search_username.text = user.username
+        if(user.profileImg != null){
+            Picasso.get().load(user.profileImg).into(viewHolder.itemView.search_profileImg)
+        }
+
         Log.d("new_message","Usernames are: ${user.username}")
     }
 

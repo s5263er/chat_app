@@ -49,12 +49,12 @@ class Register: AppCompatActivity()
         val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
         val ref = database.getReference("/users/$uid2")
 
-        val user = User(uid2, register_username.text.toString())
+        val user = User(uid2, register_username.text.toString(),"https://upload.wikimedia.org/wikipedia/commons/b/b2/BNP_Paribas.png")
 
 
         ref.setValue(user).addOnSuccessListener {
                 Log.d("TAG", "Finally we saved the user to Firebase Database")
-            val intent = Intent(this, Menu::class.java)
+            val intent = Intent(this, select_photo::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
 

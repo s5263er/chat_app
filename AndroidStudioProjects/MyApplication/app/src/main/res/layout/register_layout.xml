@@ -86,7 +86,7 @@
             android:layout_height="50dp"
             android:background="@android:color/white"
             android:ems="10"
-            android:hint="Username"
+            android:hint="E-mail"
             android:inputType="textEmailAddress"
             android:paddingLeft="10dp"
             android:layout_gravity="center"></com.google.android.material.textfield.TextInputEditText>

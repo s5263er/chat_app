@@ -12,11 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
+        <activity android:name=".select_photo"
+            android:parentActivityName=".Register"></activity>
         <activity
             android:name=".new_message"
-            android:parentActivityName=".new_message">
-
-        </activity>
+            android:parentActivityName=".new_message"></activity>
         <activity android:name=".Menu" />
         <activity android:name=".MainActivity">
             <intent-filter>
