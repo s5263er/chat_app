@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +33,10 @@ class new_message : AppCompatActivity() {
         retrieveUsers()
     }
 
+    companion object{
+        val USER_KEY = "USER_KEY"
+    }
+
     private fun retrieveUsers(){
         val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
         val ref = database.getReference("/users")
@@ -46,7 +51,18 @@ class new_message : AppCompatActivity() {
                     if(user != null)
                     {
                         adapter.add(UserItem(user))
-                        Log.d("new_message","User is not null: ${user.username}")
+                        //Log.d("new_message","User is not null: ${user.username}")
+                        adapter.setOnItemClickListener { item, view ->
+
+                            val userItem = item as UserItem
+                            val intent = Intent(view.context,Chat_Screen::class.java)
+                            //intent.putExtra(USER_KEY, userItem.user.username)
+                            intent.putExtra(USER_KEY,userItem.user)
+                            startActivity(intent)
+                            finish()
+                        }
+
+
                     }
                     else
                     {
