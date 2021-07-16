@@ -16,11 +16,11 @@
         android:background="@drawable/select_photo_rounded"
         android:padding="16dp"
         android:text="TextView"
-        app:layout_constraintEnd_toStartOf="@+id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/profileImgRight"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView3"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImgRight"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="4dp"

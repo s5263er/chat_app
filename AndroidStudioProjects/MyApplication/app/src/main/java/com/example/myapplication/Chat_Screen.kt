@@ -4,12 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -20,16 +18,37 @@ import kotlinx.android.synthetic.main.chat_row_right.view.*
 
 class Chat_Screen : AppCompatActivity() {
     val adapter = GroupAdapter<GroupieViewHolder>()
+    var userTo: User? = null
+    companion object{
+        var currentUser: User? = null
+    }
+
+    private fun currUser(){
+        val uid = FirebaseAuth.getInstance().uid
+        val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
+        val ref = database.getReference("/users/$uid")
+        ref.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                currentUser = snapshot.getValue(User::class.java)
+                Log.d("chat","current user is ${currentUser!!.username}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat__screen)
+        currUser()
 
         listview_chat_screen.adapter = adapter
 
 
 
-        val user = intent.getParcelableExtra<User>(new_message.USER_KEY)
-        supportActionBar?.title = user?.username.toString()
+        userTo = intent.getParcelableExtra<User>(new_message.USER_KEY)
+        supportActionBar?.title = userTo?.username.toString()
 
         val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -61,7 +80,7 @@ class Chat_Screen : AppCompatActivity() {
 
     private fun bringData(){
         val adapter = GroupAdapter<GroupieViewHolder>()
-        adapter.add(ChatRow("dummy"))
+        //adapter.add(ChatRow("dummy"))
 
         listview_chat_screen.adapter = adapter
 
@@ -79,10 +98,13 @@ class Chat_Screen : AppCompatActivity() {
 
                 if(msg != null){
                     if(msg.from == FirebaseAuth.getInstance().uid){
-                        adapter.add(ChatRow(msg.data))
+                        adapter.add(ChatRow(msg.data, userTo!!))
+                        Log.d("chat","yollanan")
                     }
                     else{
-                        adapter.add(ChatRowGelen(msg.data))
+                        //val userFr = intent.getParcelableExtra<User>(new_message.USER_KEY)
+                        adapter.add(ChatRowGelen(msg.data, currentUser!!))
+                        Log.d("chat","gelen")
                     }
 
                 }
@@ -111,9 +133,13 @@ class Chat_Screen : AppCompatActivity() {
 }
 
 
-class ChatRow(val text: String) : Item<GroupieViewHolder>() {
+class ChatRow(val text: String, val user: User) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_text.text = text
+
+        var uri = user.profileImg
+        val img = viewHolder.itemView.profileImg
+        Picasso.get().load(uri).into(img)
     }
 
     override fun getLayout(): Int {
@@ -121,9 +147,12 @@ class ChatRow(val text: String) : Item<GroupieViewHolder>() {
     }
 }
 
-class ChatRowGelen(val text: String) : Item<GroupieViewHolder>() {
+class ChatRowGelen(val text: String,val user: User) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_text_right.text = text
+        var uri = user.profileImg
+        val img = viewHolder.itemView.profileImgRight
+        Picasso.get().load(uri).into(img)
     }
 
     override fun getLayout(): Int {
