@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,16 +24,58 @@ import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.message_row_user.view.*
 import kotlinx.android.synthetic.main.new_message_layout.*
 import kotlinx.android.synthetic.main.select_photo.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class new_message : AppCompatActivity() {
+    private lateinit var usersArray: ArrayList<User>
+    private lateinit var tempUsers:  ArrayList<User>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.new_message_layout)
 
         supportActionBar?.title = "Start a chat"
 
+        usersArray = arrayListOf<User>()
+        tempUsers = arrayListOf<User>()
+
         retrieveUsers()
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_search,menu)
+        val item = menu?.findItem(R.id.search_user)
+        val searchView = item?.actionView as SearchView
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextChange(newText: String?): Boolean {
+                tempUsers.clear()
+                val searchText = newText!!.toLowerCase(Locale.getDefault())
+                if(searchText.isNotEmpty()){
+                    usersArray.forEach{
+                        Log.d("new_Msg","user arrayda arastirma")
+                        if(it.username?.toLowerCase(Locale.getDefault())!!.contains(searchText)){
+                            Log.d("new_Msg","TUTAN VARRR")
+                            tempUsers.add(it)
+                        }
+                    }
+                    listview_new_msg.adapter?.notifyDataSetChanged()
+                }
+                else{
+                    Log.d("new_Msg","user arrayda arastirma SEARCH EMPTY")
+                    tempUsers.clear()
+                    tempUsers.addAll(usersArray)
+                    listview_new_msg.adapter?.notifyDataSetChanged()
+                }
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                TODO("Not yet implemented")
+            }
+        })
+        return super.onCreateOptionsMenu(menu)
     }
 
     companion object{
@@ -46,32 +90,52 @@ class new_message : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val adapter = GroupAdapter<GroupieViewHolder>()
 
-                snapshot.children.forEach {
-                    Log.d("new_msg","${it.toString()}")
-                   val user = it.getValue(User::class.java)
-                    if(user != null)
-                    {
-                        adapter.add(UserItem(user))
-                        //Log.d("new_message","User is not null: ${user.username}")
-                        adapter.setOnItemClickListener { item, view ->
+                snapshot.children.forEach{
+                    val user = it.getValue(User::class.java)
+                    usersArray.add(user!!)
+                }
+                tempUsers.addAll(usersArray)
 
-                            val userItem = item as UserItem
-                            val intent = Intent(view.context,Chat_Screen::class.java)
-                            //intent.putExtra(USER_KEY, userItem.user.username)
-                            intent.putExtra(USER_KEY,userItem.user)
-                            startActivity(intent)
-                            finish()
+
+
+
+                //adapter.clear()
+
+
+                    snapshot.children.forEach {
+                        //Log.d("new_msg","tempUser boss")
+                        val user = it.getValue(User::class.java)
+
+                        if(user != null)
+                        {
+                            /*if(tempUsers.contains(user))
+                            {
+                                adapter.add(UserItem(user))
+                                Log.d("new_message","tempuserlar eklendi bakalim")
+                            }*/
+                            adapter.add(UserItem(user))
+
+
+                            adapter.setOnItemClickListener { item, view ->
+
+                                val userItem = item as UserItem
+                                val intent = Intent(view.context,Chat_Screen::class.java)
+                                //intent.putExtra(USER_KEY, userItem.user.username)
+                                intent.putExtra(USER_KEY,userItem.user)
+                                startActivity(intent)
+                                finish()
+                            }
+
+
+                        }
+                        else
+                        {
+                            Log.d("new_message","user is null can't retrieve data")
                         }
 
-
                     }
-                    else
-                    {
-                        Log.d("new_message","user is null can't retrieve data")
-                    }
-
-                }
                 listview_new_msg.adapter = adapter
+
             }
             override fun onCancelled(error: DatabaseError) {
             }
@@ -88,7 +152,7 @@ class UserItem(val user: User): Item<GroupieViewHolder>(){
             Picasso.get().load(user.profileImg).into(viewHolder.itemView.search_profileImg)
         }
 
-        Log.d("new_message","Usernames are: ${user.username}")
+                //Log.d("new_message","Usernames are: ${user.username}")
     }
 
     override fun getLayout(): Int {
