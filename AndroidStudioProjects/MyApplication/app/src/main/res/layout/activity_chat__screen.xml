@@ -15,7 +15,6 @@
         android:ems="10"
         android:hint="Send a message"
         android:inputType="textPersonName"
-        android:text="Send a message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/send_button"
         app:layout_constraintHorizontal_bias="0.0"

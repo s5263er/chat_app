@@ -83,6 +83,11 @@ class Chat_Screen : AppCompatActivity() {
             send_chat_box.text.clear()
             listview_chat_screen.scrollToPosition(adapter.itemCount - 1)
         }
+        val latestMsg = database.getReference("/latest-messages/$from/$to")
+        val latestMsgSender = database.getReference("/latest-messages/$to/$from")
+        latestMsg.setValue(chatMsg)
+        latestMsgSender.setValue(chatMsg)
+
 
     }
 
@@ -118,6 +123,7 @@ class Chat_Screen : AppCompatActivity() {
                     }
 
                 }
+                listview_chat_screen.scrollToPosition(adapter.itemCount - 1)
 
             }
 
