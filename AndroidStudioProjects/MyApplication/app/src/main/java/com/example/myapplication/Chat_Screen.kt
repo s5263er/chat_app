@@ -68,12 +68,20 @@ class Chat_Screen : AppCompatActivity() {
         val to = user?.uid
         val text = send_chat_box.text.toString()
         val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
-        val ref = database.getReference("/messages").push()
+        //val ref = database.getReference("/messages").push()
+        val ref = database.getReference("/user-user/$from/$to").push()
+
+        val toRef = database.getReference("/user-user/$to/$from").push()
 
         val chatMsg = Message(ref.key!!,text,from!!,to!!,System.currentTimeMillis())
 
         ref.setValue(chatMsg).addOnFailureListener {
             Log.d("Chat_Screen","Failed to send msg to firebase")
+        }
+        toRef.setValue(chatMsg).addOnSuccessListener {
+            Log.d("Chat_Screen","Sent msg to firebase")
+            send_chat_box.text.clear()
+            listview_chat_screen.scrollToPosition(adapter.itemCount - 1)
         }
 
     }
@@ -86,10 +94,12 @@ class Chat_Screen : AppCompatActivity() {
 
     }
     private fun chatListener(){
+        val from = FirebaseAuth.getInstance().uid
+        val to = userTo!!.uid
         val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
-        val ref = database.getReference("messages")
+        val ref = database.getReference("/user-user/$from/$to")
 
-        val urlref = FirebaseDatabase.getInstance("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/messages")
+        val urlref = FirebaseDatabase.getInstance("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/user-user/$from/$to")
         urlref.addChildEventListener(object: ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val msg = snapshot.getValue(Message::class.java)
@@ -98,12 +108,12 @@ class Chat_Screen : AppCompatActivity() {
 
                 if(msg != null){
                     if(msg.from == FirebaseAuth.getInstance().uid){
-                        adapter.add(ChatRow(msg.data, userTo!!))
+                        adapter.add(ChatRow(msg.data, currentUser!! ))
                         Log.d("chat","yollanan")
                     }
                     else{
                         //val userFr = intent.getParcelableExtra<User>(new_message.USER_KEY)
-                        adapter.add(ChatRowGelen(msg.data, currentUser!!))
+                        adapter.add(ChatRowGelen(msg.data, userTo!!))
                         Log.d("chat","gelen")
                     }
 
@@ -133,11 +143,11 @@ class Chat_Screen : AppCompatActivity() {
 }
 
 
-class ChatRow(val text: String, val user: User) : Item<GroupieViewHolder>() {
+class ChatRow(val text: String, val user1: User) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_text.text = text
 
-        var uri = user.profileImg
+        var uri = user1.profileImg
         val img = viewHolder.itemView.profileImg
         Picasso.get().load(uri).into(img)
     }
