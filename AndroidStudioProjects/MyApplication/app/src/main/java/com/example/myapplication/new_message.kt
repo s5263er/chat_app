@@ -11,9 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.R
+import com.example.myapplication.User
+import com.example.myapplication.UserAdapter
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -33,14 +38,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class new_message : AppCompatActivity() {
+class new_message :  AppCompatActivity() {
     private lateinit var usersArray: ArrayList<User>
-
     private lateinit var tempUsers:  ArrayList<User>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.new_message_layout)
-        val adapter = GroupAdapter<GroupieViewHolder>()
 
         supportActionBar?.title = "Start a chat"
 
@@ -48,15 +51,8 @@ class new_message : AppCompatActivity() {
         tempUsers = arrayListOf<User>()
 
         retrieveUsers()
-        Log.d("retrieve sonrasi" ,"${tempUsers.size} tempusersin buyuklugu")
-
-
-
-
-
 
     }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_search,menu)
         val item = menu?.findItem(R.id.search_user)
@@ -94,7 +90,6 @@ class new_message : AppCompatActivity() {
     companion object{
         val USER_KEY = "USER_KEY"
     }
-
     private fun retrieveUsers() {
         val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
         val ref = database.getReference("/users")
@@ -107,8 +102,6 @@ class new_message : AppCompatActivity() {
                     usersArray.add(user!!)
                 }
                 tempUsers.addAll(usersArray)
-                Log.d("alttaki tempuser","alttaki tempuser da bu kadar ${tempUsers.size}")
-                listview_new_msg.adapter = CompanyAdapter(getUsers(tempUsers))
                 /*tempUsers.forEach {
                     adapter.add(UserItem(it))
                     Log.d("search","kac kere girecek bakalim")
@@ -120,7 +113,7 @@ class new_message : AppCompatActivity() {
                 //adapter.clear()
 
 
-                /*snapshot.children.forEach {
+                snapshot.children.forEach {
                         //Log.d("new_msg","tempUser boss")
                         val user = it.getValue(User::class.java)
 
@@ -131,6 +124,7 @@ class new_message : AppCompatActivity() {
                                 adapter.add(UserItem(user))
                                 Log.d("new_message","tempuserlar eklendi bakalim")
                             }*/
+                            val adapter = GroupAdapter<GroupieViewHolder>()
                             adapter.add(UserItem(user))
 
                             adapter.setOnItemClickListener { item, view ->
@@ -150,7 +144,7 @@ class new_message : AppCompatActivity() {
                             Log.d("new_message","user is null can't retrieve data")
                         }
 
-                    }*/
+                    }
 
 
             }
@@ -164,7 +158,11 @@ class new_message : AppCompatActivity() {
         })
 
     }
+
+
 }
+
+
 
 class UserItem(val user: User): Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -180,40 +178,4 @@ class UserItem(val user: User): Item<GroupieViewHolder>(){
     }
 
 }
-private fun getUsers(users: ArrayList<User>): MutableList<User> {
-    val companies = users.toMutableList()
-
-    return companies
-}
-
-
-abstract class CompanyAdapter2 (val companies : MutableList<User>) : RecyclerView.Adapter<CompanyAdapter.CompanyViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompanyViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.new_message_layout,parent,false)
-        return CompanyViewHolder(v)
-
-    }
-
-    override fun getItemCount(): Int {
-        return companies.size
-    }
-    fun add(item:User, position:Int) {
-        companies.add(position, item)
-        notifyItemInserted(position)
-    }
-    override fun onBindViewHolder(holder: CompanyViewHolder, position: Int) {
-        val company = companies[position]
-        Log.d("myadapter","${companies.size} bakalim company sizeina")
-        //holder.itemView.search_username.text= "company.username"
-        if(company != null){
-            //****************************************************************************\\
-            holder.itemView.search_username.text= company!!.username //error burada
-            Picasso.get().load(company!!.profileImg).into(holder.itemView.search_profileImg)
-        }
-    }
-
-
-    class CompanyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
-}
-
 
