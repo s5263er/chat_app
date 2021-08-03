@@ -86,6 +86,7 @@ class new_message :  AppCompatActivity() {
             }
 
             override fun onQueryTextSubmit(query: String?): Boolean {
+                retrieveUsersWithArray(tempUsers)
                 return false
             }
         })
@@ -96,6 +97,9 @@ class new_message :  AppCompatActivity() {
         val USER_KEY = "USER_KEY"
     }
     private fun retrieveUsersWithArray(userArray: ArrayList<User>){
+        val from = FirebaseAuth.getInstance().uid
+        val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
+        val ref = database.getReference("/latest-messages/$from")
 
         adapter.clear()
         userArray.forEach {

@@ -106,6 +106,7 @@
              />-->
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -115,27 +116,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.6"
         app:passwordToggleEnabled="true"
-        app:passwordToggleTint="@color/black"
-        >
+        app:passwordToggleTint="@color/black">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/login_password"
             android:layout_width="300dp"
             android:layout_height="50dp"
+            android:layout_gravity="center"
             android:background="@android:color/white"
             android:ems="10"
-            android:inputType="textPassword"
-            android:paddingLeft="10dp"
             android:hint="Password"
-            android:layout_gravity="center"
-            >
-        </com.google.android.material.textfield.TextInputEditText>
+            android:inputType="textPassword"
+            android:paddingLeft="10dp"></com.google.android.material.textfield.TextInputEditText>
     </com.google.android.material.textfield.TextInputLayout>
-
-
-
-
-
-
 
 
     <Button
@@ -143,16 +136,14 @@
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:background="@android:color/black"
+        android:gravity="center"
         android:text="Sign In"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.75"
-         />
-
-
+        app:layout_constraintVertical_bias="0.788" />
 
     <TextView
         android:id="@+id/go_to_register_login"
@@ -164,5 +155,21 @@
         app:layout_constraintEnd_toEndOf="@+id/button_login"
         app:layout_constraintStart_toStartOf="@+id/button_login"
         app:layout_constraintTop_toBottomOf="@+id/button_login" />
+
+    <CheckBox
+        android:id="@+id/rememberme"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:buttonTint="#000000"
+        android:gravity="center|center_vertical"
+        android:onClick="onSave"
+        android:text="Remember Me"
+        app:layout_constraintBottom_toTopOf="@+id/button_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
