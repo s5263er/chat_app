@@ -51,9 +51,7 @@ class select_photo : AppCompatActivity() {
                 val ref = database.getReference("/users/$uid/profileImg")
                 ref.setValue(it.toString())
             }
-
         }
-
     }
     var selectedPhotoUri: Uri? = null
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -66,11 +64,6 @@ class select_photo : AppCompatActivity() {
             selectphoto_circle_image.setImageBitmap(bitmap)
 
             select_photo_button.alpha = 0f
-            //val bitmap = MediaStore.Images.Media.getBitmap(contentResolver,selectedPhotoUri)
-
-            //val bitmapDrawable = BitmapDrawable(bitmap)
-
-            //select_photo_button.setBackgroundDrawable(bitmapDrawable)
 
         }
     }
