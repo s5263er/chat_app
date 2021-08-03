@@ -41,7 +41,9 @@ import kotlin.collections.ArrayList
 class new_message :  AppCompatActivity() {
     private lateinit var usersArray: ArrayList<User>
     private lateinit var tempUsers:  ArrayList<User>
+    val adapter = GroupAdapter<GroupieViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.new_message_layout)
 
@@ -69,6 +71,8 @@ class new_message :  AppCompatActivity() {
                             tempUsers.add(it)
                         }
                     }
+                    retrieveUsersWithArray(tempUsers)
+
                     listview_new_msg.adapter?.notifyDataSetChanged()
                 }
                 else{
@@ -76,12 +80,13 @@ class new_message :  AppCompatActivity() {
                     tempUsers.clear()
                     tempUsers.addAll(usersArray)
                     listview_new_msg.adapter?.notifyDataSetChanged()
+                    retrieveUsers()
                 }
                 return false
             }
 
             override fun onQueryTextSubmit(query: String?): Boolean {
-                TODO("Not yet implemented")
+                return false
             }
         })
         return super.onCreateOptionsMenu(menu)
@@ -90,17 +95,40 @@ class new_message :  AppCompatActivity() {
     companion object{
         val USER_KEY = "USER_KEY"
     }
+    private fun retrieveUsersWithArray(userArray: ArrayList<User>){
+
+        adapter.clear()
+        userArray.forEach {
+            adapter.add(UserItem(it))
+            Log.d("retrieveuserswitharray","${userArray.size} search array size'i")
+
+            adapter.setOnItemClickListener { item, view ->
+
+                val userItem = item as UserItem
+                val intent = Intent(view.context,Chat_Screen::class.java)
+                //intent.putExtra(USER_KEY, userItem.user.username)
+                intent.putExtra(USER_KEY,userItem.user)
+                startActivity(intent)
+                finish()
+            }
+        }
+        tempUsers.clear()
+
+    }
     private fun retrieveUsers() {
         val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
         val ref = database.getReference("/users")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+        adapter.clear()
+        ref.addValueEventListener(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
+                usersArray.clear()
 
                 snapshot.children.forEach {
                     val user = it.getValue(User::class.java)
                     usersArray.add(user!!)
                 }
+                tempUsers.clear()
                 tempUsers.addAll(usersArray)
                 /*tempUsers.forEach {
                     adapter.add(UserItem(it))
@@ -124,7 +152,7 @@ class new_message :  AppCompatActivity() {
                                 adapter.add(UserItem(user))
                                 Log.d("new_message","tempuserlar eklendi bakalim")
                             }*/
-                            val adapter = GroupAdapter<GroupieViewHolder>()
+
                             adapter.add(UserItem(user))
 
                             adapter.setOnItemClickListener { item, view ->
@@ -145,6 +173,7 @@ class new_message :  AppCompatActivity() {
                         }
 
                     }
+                listview_new_msg.adapter = adapter
 
 
             }
