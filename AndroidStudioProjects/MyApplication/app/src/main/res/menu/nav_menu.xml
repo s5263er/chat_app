@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu_search1"
+        android:title="Search"
+        android:icon="@drawable/ic_baseline_group_add_24"
+        />
+    <item android:id="@+id/menu_logout1"
+        android:title="Logout"
+        android:icon="@drawable/attachment_icon"
+        android:iconTint="@color/white"
+       />
+    <item android:id="@+id/menu_photo1"
+        android:title="Logout"
+        android:icon="@drawable/ic_baseline_photo_library_24" />
+</menu>

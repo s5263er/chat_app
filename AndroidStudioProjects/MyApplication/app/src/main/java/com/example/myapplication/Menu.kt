@@ -32,6 +32,44 @@ class Menu : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.menu_layout)
+        /*bottom_navigation.setOnNavigationItemReselectedListener {
+            when(it?.itemId){
+                R.id.menu_search1 -> {
+                    val intent = Intent(this, new_message::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_logout1 -> {
+                    FirebaseAuth.getInstance().signOut()
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
+            }
+
+        }*/
+        bottom_navigation.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.menu_search1 -> {
+                    val intent = Intent(this, new_message::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_logout1 -> {
+                    FirebaseAuth.getInstance().signOut()
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
+            }
+            true
+        }
+        /*bottom_navigation.setOnItemSelectedListener {
+            when(it?.itemId){
+                R.id.menu_search1 -> {
+                    val intent = Intent(this, new_message::class.java)
+                    startActivity(intent)
+                }
+            }
+        }*/
         listview_menu.adapter = adapter
         listview_menu.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         adapter.setOnItemClickListener { item, view ->
@@ -104,7 +142,14 @@ class Menu : AppCompatActivity() {
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
             Log.d("menu","latest msg type = ${chatMsg.type}")
             if(chatMsg.type == "text"){
-                viewHolder.itemView.latest_msg_text.text = chatMsg.data
+                if(chatMsg.data.length > 30){
+                    viewHolder.itemView.latest_msg_text.text = "${chatMsg.data.subSequence(0,27)}..."
+                }
+                else{
+                    viewHolder.itemView.latest_msg_text.text = chatMsg.data
+                }
+
+
             }
             if(chatMsg.type == "img"){
                 viewHolder.itemView.latest_msg_text.text = "Image Data"
@@ -169,6 +214,8 @@ class Menu : AppCompatActivity() {
 
     }
     val adapter = GroupAdapter<GroupieViewHolder>()
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item?.itemId){
