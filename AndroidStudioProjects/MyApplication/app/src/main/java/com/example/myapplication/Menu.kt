@@ -42,6 +42,7 @@ class Menu : AppCompatActivity() {
         }
         listenLatestMsg()
     }
+    //The last commit is on 20 March (At the bottom of the page)
     val latestMsgMap = HashMap<String, Message>()
     private fun refreshListViewMsg(){
         adapter.clear()
