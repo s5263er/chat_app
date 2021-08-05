@@ -74,7 +74,6 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat__screen)
@@ -88,6 +87,7 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
 
         userTo = intent.getParcelableExtra<User>(new_message.USER_KEY)
         supportActionBar?.title = userTo?.username.toString()
+
 
 
         send_button.setOnClickListener {
@@ -420,6 +420,10 @@ class ChatRowMap(val latitude: Double,val longitude: Double,val user1: User,val 
         Picasso.get().load(uri).into(img)
 
         viewHolder.itemView.map_text_saat.text = time
+        var uri2 = "https://lh3.googleusercontent.com/proxy/NeKfRR02yBcsYzGLZU-dWFt2EEmgtSt5pnt17Y4yFoZJOBIFLapWIgsSVQTdbut9JXjtVk-LeHYGOCHmw8ztd7hiuUxK3PDNhDybGRpq2j48kUW_LEU"
+
+        val img2 = viewHolder.itemView.map_button
+        Picasso.get().load(uri2).into(img2)
     }
 
     override fun getLayout(): Int {
@@ -436,11 +440,19 @@ class ChatRowMapRight(val latitude: Double,val longitude: Double,val user1: User
 
         viewHolder.itemView.map_text_saat_right.text = time
 
+        var uri2 = "https://lh3.googleusercontent.com/proxy/NeKfRR02yBcsYzGLZU-dWFt2EEmgtSt5pnt17Y4yFoZJOBIFLapWIgsSVQTdbut9JXjtVk-LeHYGOCHmw8ztd7hiuUxK3PDNhDybGRpq2j48kUW_LEU"
+
+        val img2 = viewHolder.itemView.map_button_right
+        Picasso.get().load(uri2).into(img2)
+
+
     }
 
     override fun getLayout(): Int {
         return R.layout.chat_row_map_right
     }
+
+
 }
 
 

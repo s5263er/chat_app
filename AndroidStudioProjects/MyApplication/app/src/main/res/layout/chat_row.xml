@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp">
+    android:background="@color/harika"
+   >
 
     <TextView
         android:id="@+id/chat_text"
@@ -14,6 +15,8 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/select_photo_rounded"
+        app:layout_constraintWidth_max="200dp"
+        android:textColor="@color/white"
         android:padding="16dp"
         android:text="TextView"
         android:textIsSelectable="true"

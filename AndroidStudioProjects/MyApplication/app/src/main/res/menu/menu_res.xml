@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_search"
         android:title="Search"
+        android:icon="@drawable/ic_baseline_group_add_24"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/menu_logout"
         android:title="Logout"
+        android:icon="@drawable/ic_baseline_exit_to_app_24"
         app:showAsAction="ifRoom"/>
 
 

@@ -31,6 +31,7 @@ import com.xwray.groupie.GroupieAdapter
 
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import kotlinx.android.synthetic.main.menu_layout.*
 import kotlinx.android.synthetic.main.message_row_user.view.*
 import kotlinx.android.synthetic.main.new_message_layout.*
 import kotlinx.android.synthetic.main.select_photo.view.*
@@ -48,6 +49,7 @@ class new_message :  AppCompatActivity() {
         setContentView(R.layout.new_message_layout)
 
         supportActionBar?.title = "Start a chat"
+        listview_new_msg.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
         usersArray = arrayListOf<User>()
         tempUsers = arrayListOf<User>()

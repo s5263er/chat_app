@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp">
+  >
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profileImgImg_right"
@@ -22,7 +22,7 @@
         android:id="@+id/imageView_chat_right"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/profileImgImg_right"
         app:layout_constraintHorizontal_bias="0.8"

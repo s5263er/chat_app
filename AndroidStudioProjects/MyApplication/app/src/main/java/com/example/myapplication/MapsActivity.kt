@@ -1,8 +1,7 @@
 package com.example.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -17,6 +16,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+        val username1 = intent.getStringExtra("username")
+        supportActionBar?.title = "Location of ${username1}"
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -35,13 +36,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val long = intent.getDoubleExtra("Long",34.2)
-        val lat = intent.getDoubleExtra("Lat",34.2)
+        val long = intent.getDoubleExtra("Long", 34.2)
+        val lat = intent.getDoubleExtra("Lat", 34.2)
         val username = intent.getStringExtra("username")
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(lat,long)
+        val sydney = LatLng(lat, long)
         mMap.addMarker(MarkerOptions().position(sydney).title("Location of ${username}"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, long), 20.0f))
     }
 }
