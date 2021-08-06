@@ -1,15 +1,19 @@
 package com.example.myapplication
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.myapplication.new_message.Companion.USER_KEY
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -22,6 +26,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.chat_row.view.*
+import kotlinx.android.synthetic.main.latest_msg_row.*
 import kotlinx.android.synthetic.main.latest_msg_row.view.*
 import kotlinx.android.synthetic.main.menu_layout.*
 import java.text.SimpleDateFormat
@@ -33,60 +38,117 @@ class Menu : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.menu_layout)
-        /*bottom_navigation.setOnNavigationItemReselectedListener {
-            when(it?.itemId){
-                R.id.menu_search1 -> {
-                    val intent = Intent(this, new_message::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_logout1 -> {
-                    FirebaseAuth.getInstance().signOut()
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                }
-            }
 
-        }*/
         bottom_navigation.setOnItemSelectedListener {
             when(it.itemId){
                 R.id.menu_search1 -> {
                     val intent = Intent(this, new_message::class.java)
                     startActivity(intent)
+
                 }
                 R.id.menu_chat -> {
                     val intent = Intent(this, com.example.myapplication.Menu::class.java)
                     startActivity(intent)
+                    finish()
                 }
                 R.id.menu_settings ->{
-
+                    FirebaseAuth.getInstance().signOut()
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
                 }
                 R.id.menu_story -> {
                     Log.d("story","girdik")
                     val intent = Intent(this, StoryActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }
             }
             true
         }
-        /*bottom_navigation.setOnItemSelectedListener {
-            when(it?.itemId){
-                R.id.menu_search1 -> {
-                    val intent = Intent(this, new_message::class.java)
-                    startActivity(intent)
-                }
-            }
-        }*/
         listview_menu.adapter = adapter
         listview_menu.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        supportActionBar?.title = "Chat Inn"
+
+
         adapter.setOnItemClickListener { item, view ->
             val intent = Intent(this, Chat_Screen::class.java)
+            val intent_story = Intent(this,story_splash_screen::class.java)
             val row = item as LatestMsgRow
-            intent.putExtra(USER_KEY, row.chatPartnerUser)
-            startActivity(intent)
+            if(checkStoryValid(row.chatPartnerUser)){
+                val dialogBuilder = AlertDialog.Builder(this)
+                dialogBuilder.setMessage("${row.chatPartnerUser?.username} shared a story ${System.currentTimeMillis()/(1000*60)-(row.chatPartnerUser?.storyTime)!!/(1000*60) } minutes ago do you want to watch ?")
+                    // if the dialog is cancelable
+                    .setCancelable(true)
+                    // positive button text and action
+                    .setPositiveButton("Story", DialogInterface.OnClickListener {
+                            dialog, id ->
+                        Log.d("story","profileimg click algilandi")
+                        intent_story.putExtra(USER_KEY,row.chatPartnerUser)
+                        startActivity(intent_story)
+                        finish()
+                    })
+                    // negative button text and action
+                    .setNegativeButton("Chat", DialogInterface.OnClickListener {
+                            dialog, id ->
+                        intent.putExtra(USER_KEY, row.chatPartnerUser)
+                        startActivity(intent)
+
+                        dialog.cancel()
+                    })
+
+                // create dialog box
+                val alert = dialogBuilder.create()
+                // set title for alert dialog box
+                alert.setTitle("${row.chatPartnerUser!!.username}'s Story")
+                // show alert dialog
+                alert.show()
+            }
+            else{
+                intent.putExtra(USER_KEY, row.chatPartnerUser)
+                startActivity(intent)
+            }
+
         }
         listenLatestMsg()
     }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_logout -> {
+                FirebaseAuth.getInstance().signOut()
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_res, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun checkStoryValid(user: User?): Boolean {
+        if(user?.storyUri!!.isEmpty() || user?.storyUri == ""){
+            return false
+        }
+        if(user?.storyDesc!!.isEmpty() || user?.storyDesc == ""){
+            return false
+        }
+        if(!(user?.storyDuration!!.toInt() > 0))
+        {
+            return false
+        }
+        val duration = user.storyDuration.toInt()
+        val sentTime = user.storyTime.toLong()
+        val currTime = System.currentTimeMillis()
+        val time_went = (currTime/(60*1000)) -  (sentTime/(60*1000))
+        Log.d("time_left_story","${time_went}")
+        return time_went <= duration
+    }
+
     //The last commit is on 20 March (At the bottom of the page)
     val latestMsgMap = HashMap<String, Message>()
     private fun refreshListViewMsg(){
@@ -128,22 +190,6 @@ class Menu : AppCompatActivity() {
 
         })
     }
-    private fun isLogged(){
-        val uid = FirebaseAuth.getInstance().uid
-        if(uid == null)
-        {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        }
-    }
-
-    /*fun convertDate(dateInMilliseconds: String, dateFormat: String?): String? {
-        return DateFormat.format(dateFormat, dateInMilliseconds.toLong()).toString()
-    }*/
-
-
-
     class LatestMsgRow(val chatMsg: Message) : Item<GroupieViewHolder>() {
         var chatPartnerUser: User? = null
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -155,6 +201,7 @@ class Menu : AppCompatActivity() {
                 else{
                     viewHolder.itemView.latest_msg_text.text = chatMsg.data
                 }
+                viewHolder.itemView.latest_msg_text.setTextColor(Color.DKGRAY)
 
 
             }
@@ -175,9 +222,30 @@ class Menu : AppCompatActivity() {
 
            // val timer = DateFormat.getDateInstance().format(time)
             val timer = getDate(chatMsg.time,"dd/MM/yyyy")
-            val saatci = "${hours+3}:$minutes"
-            val rolex = "$timer $saatci"
-            viewHolder.itemView.latest_msg_time.text = rolex.toString()
+            if(minutes < 10 && hours > 10){
+                val saatci = "${hours+3}:0$minutes"
+                val rolex = "$timer $saatci"
+                viewHolder.itemView.latest_msg_time.text = rolex.toString()
+            }
+            else if(hours < 10 && minutes > 10){
+                val saatci = "0${hours+3}:$minutes"
+                val rolex = "$timer $saatci"
+                viewHolder.itemView.latest_msg_time.text = rolex.toString()
+            }
+            else if(hours > 10 && minutes > 10){
+                val saatci = "${hours+3}:$minutes"
+                val rolex = "$timer $saatci"
+                viewHolder.itemView.latest_msg_time.text = rolex.toString()
+            }
+            else if(hours < 10 && minutes < 10) {
+                val saatci = "0${hours+3}:0$minutes"
+                val rolex = "$timer $saatci"
+                viewHolder.itemView.latest_msg_time.text = rolex.toString()
+            }
+
+
+
+
 
             //viewHolder.itemView.latest_msg_time.text
             var chatPartner: String
@@ -202,6 +270,7 @@ class Menu : AppCompatActivity() {
                     if(story_valid!!){
                         viewHolder.itemView.latest_msg_imageview.borderColor = Color.MAGENTA
                         viewHolder.itemView.latest_msg_imageview.borderWidth = 30
+
                     }
 
                     Picasso.get().load((chatPartnerUser?.profileImg)).into(viewHolder.itemView.latest_msg_imageview)
@@ -247,32 +316,4 @@ class Menu : AppCompatActivity() {
 
     }
     val adapter = GroupAdapter<GroupieViewHolder>()
-
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item?.itemId){
-            R.id.menu_search -> {
-                val intent = Intent(this, new_message::class.java)
-                startActivity(intent)
-            }
-            R.id.menu_chat -> {
-                val intent = Intent(this, com.example.myapplication.Menu::class.java)
-                startActivity(intent)
-            }
-            R.id.menu_settings -> {
-                FirebaseAuth.getInstance().signOut()
-                val intent = Intent(this, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-            }
-
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_res, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
 }

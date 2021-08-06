@@ -20,6 +20,31 @@ class StoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_story)
 
+        bottom_navigation_story.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.menu_search1 -> {
+                    val intent = Intent(this, new_message::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_chat -> {
+                    val intent = Intent(this, com.example.myapplication.Menu::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                R.id.menu_settings ->{
+                    FirebaseAuth.getInstance().signOut()
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    finish()
+                }
+                R.id.menu_story -> {
+
+                }
+            }
+            true
+        }
+
         select_story.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"

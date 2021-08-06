@@ -420,7 +420,7 @@ class ChatRowMap(val latitude: Double,val longitude: Double,val user1: User,val 
         Picasso.get().load(uri).into(img)
 
         viewHolder.itemView.map_text_saat.text = time
-        var uri2 = "https://lh3.googleusercontent.com/proxy/NeKfRR02yBcsYzGLZU-dWFt2EEmgtSt5pnt17Y4yFoZJOBIFLapWIgsSVQTdbut9JXjtVk-LeHYGOCHmw8ztd7hiuUxK3PDNhDybGRpq2j48kUW_LEU"
+        var uri2 = "https://1000logos.net/wp-content/uploads/2020/05/Google-Maps-logo.jpg"
 
         val img2 = viewHolder.itemView.map_button
         Picasso.get().load(uri2).into(img2)
@@ -440,7 +440,7 @@ class ChatRowMapRight(val latitude: Double,val longitude: Double,val user1: User
 
         viewHolder.itemView.map_text_saat_right.text = time
 
-        var uri2 = "https://lh3.googleusercontent.com/proxy/NeKfRR02yBcsYzGLZU-dWFt2EEmgtSt5pnt17Y4yFoZJOBIFLapWIgsSVQTdbut9JXjtVk-LeHYGOCHmw8ztd7hiuUxK3PDNhDybGRpq2j48kUW_LEU"
+        var uri2 = "https://1000logos.net/wp-content/uploads/2020/05/Google-Maps-logo.jpg"
 
         val img2 = viewHolder.itemView.map_button_right
         Picasso.get().load(uri2).into(img2)
