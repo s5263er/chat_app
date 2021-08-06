@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import kotlinx.android.synthetic.main.chat_row.view.*
 import kotlinx.android.synthetic.main.latest_msg_row.view.*
 import kotlinx.android.synthetic.main.menu_layout.*
 import java.text.SimpleDateFormat
@@ -53,10 +54,16 @@ class Menu : AppCompatActivity() {
                     val intent = Intent(this, new_message::class.java)
                     startActivity(intent)
                 }
-                R.id.menu_logout1 -> {
-                    FirebaseAuth.getInstance().signOut()
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                R.id.menu_chat -> {
+                    val intent = Intent(this, com.example.myapplication.Menu::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_settings ->{
+
+                }
+                R.id.menu_story -> {
+                    Log.d("story","girdik")
+                    val intent = Intent(this, StoryActivity::class.java)
                     startActivity(intent)
                 }
             }
@@ -190,12 +197,38 @@ class Menu : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     chatPartnerUser = snapshot.getValue(User::class.java)
                     viewHolder.itemView.latest_msg_username.text = chatPartnerUser?.username
+                    val story_valid = checkStoryValid(chatPartnerUser!!)
+
+                    if(story_valid!!){
+                        viewHolder.itemView.latest_msg_imageview.borderColor = Color.MAGENTA
+                        viewHolder.itemView.latest_msg_imageview.borderWidth = 30
+                    }
+
                     Picasso.get().load((chatPartnerUser?.profileImg)).into(viewHolder.itemView.latest_msg_imageview)
                 }
             })
 
 
 
+        }
+
+        private fun checkStoryValid(user: User) : Boolean?{
+            if(user?.storyUri!!.isEmpty() || user?.storyUri == ""){
+                return false
+            }
+            if(user?.storyDesc!!.isEmpty() || user?.storyDesc == ""){
+                return false
+            }
+            if(!(user?.storyDuration!!.toInt() > 0))
+            {
+                return false
+            }
+            val duration = user.storyDuration.toInt()
+            val sentTime = user.storyTime.toLong()
+            val currTime = System.currentTimeMillis()
+            val time_went = (currTime/(60*1000)) -  (sentTime/(60*1000))
+            Log.d("time_left_story","${time_went}")
+            return time_went <= duration
         }
 
         private fun getDate(milliSeconds: Long, dateFormat: String?): String? {
@@ -223,12 +256,17 @@ class Menu : AppCompatActivity() {
                 val intent = Intent(this, new_message::class.java)
                 startActivity(intent)
             }
-            R.id.menu_logout -> {
+            R.id.menu_chat -> {
+                val intent = Intent(this, com.example.myapplication.Menu::class.java)
+                startActivity(intent)
+            }
+            R.id.menu_settings -> {
                 FirebaseAuth.getInstance().signOut()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
+
         }
         return super.onOptionsItemSelected(item)
     }

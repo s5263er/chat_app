@@ -49,7 +49,7 @@ class Register: AppCompatActivity()
         val database = Firebase.database("https://ceptechat-default-rtdb.europe-west1.firebasedatabase.app/")
         val ref = database.getReference("/users/$uid2")
 
-        val user = User(uid2, register_username.text.toString(),"https://upload.wikimedia.org/wikipedia/commons/b/b2/BNP_Paribas.png")
+        val user = User(uid2, register_username.text.toString(),"https://upload.wikimedia.org/wikipedia/commons/b/b2/BNP_Paribas.png","",0,0,"")
 
 
         ref.setValue(user).addOnSuccessListener {

@@ -5,12 +5,15 @@
         android:title="Search"
         android:icon="@drawable/ic_baseline_group_add_24"
         />
-    <item android:id="@+id/menu_logout1"
-        android:title="Logout"
-        android:icon="@drawable/attachment_icon"
+    <item android:id="@+id/menu_chat"
+        android:title="Chat"
+        android:icon="@drawable/ic_baseline_chat_bubble_24"
         android:iconTint="@color/white"
        />
-    <item android:id="@+id/menu_photo1"
-        android:title="Logout"
-        android:icon="@drawable/ic_baseline_photo_library_24" />
+    <item android:id="@+id/menu_settings"
+        android:title="Settings"
+        android:icon="@drawable/ic_baseline_settings_24" />
+    <item android:id="@+id/menu_story"
+        android:title="Stories"
+        android:icon="@drawable/ic_baseline_group_add_24" />
 </menu>
