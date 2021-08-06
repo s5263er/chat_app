@@ -41,7 +41,7 @@ class story_splash_screen : AppCompatActivity() {
 
         story_image.alpha = 0f
         ObjectAnimator.ofInt(story_countdown,"progress",currProgress).setDuration(5000).start()
-        story_image.animate().setDuration(5300).alpha(1f).withEndAction {
+        story_image.animate().setDuration(5200).alpha(1f).withEndAction {
             val intent = Intent(this,Menu::class.java)
             overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right)
             startActivity(intent)

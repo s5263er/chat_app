@@ -40,6 +40,7 @@ import kotlinx.android.synthetic.main.chat_row_img_right.view.*
 import kotlinx.android.synthetic.main.chat_row_map.view.*
 import kotlinx.android.synthetic.main.chat_row_map_right.view.*
 import kotlinx.android.synthetic.main.chat_row_right.view.*
+import kotlinx.android.synthetic.main.latest_msg_row.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.timer
@@ -108,7 +109,7 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
                     intent.putExtra("username",currentUser?.username)
                     intent.putExtra("Long",row.longitude)
                     intent.putExtra("Lat",row.latitude)
-                    startActivity(intent)}
+                    startActivity(intent) }
             }
             if (item is ChatRowMapRight){
                 val row = item as ChatRowMapRight
@@ -407,10 +408,31 @@ private fun clockCu(chatMsg: Message) : String{
 
     // val timer = DateFormat.getDateInstance().format(time)
     val timer = getDate(chatMsg.time,"dd/MM/yyyy")
-    val saatci = "${hours+3}:$minutes"
-    val rolex = "$timer $saatci"
 
-    return rolex.toString()
+    if(minutes < 10 && hours >= 10){
+        val saatci = "${hours+3}:0$minutes"
+        val rolex = "$timer $saatci"
+        return rolex.toString()
+    }
+    else if(hours < 10 && minutes >= 10){
+        val saatci = "0${hours+3}:$minutes"
+        val rolex = "$timer $saatci"
+        return rolex.toString()
+    }
+    else if(hours >= 10 && minutes >= 10){
+        val saatci = "${hours+3}:$minutes"
+        val rolex = "$timer $saatci"
+        return rolex.toString()
+    }
+    else if(hours < 10 && minutes < 10) {
+        val saatci = "0${hours+3}:0$minutes"
+        val rolex = "$timer $saatci"
+        return rolex.toString()
+
+    }
+    return "09:05 atam dolmabahcede impossible case"
+
+
 }
 
 class ChatRowMap(val latitude: Double,val longitude: Double,val user1: User,val time: String)  : Item<GroupieViewHolder>() {

@@ -44,6 +44,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val sydney = LatLng(lat, long)
         mMap.addMarker(MarkerOptions().position(sydney).title("Location of ${username}"))
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, long), 20.0f))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, long), 10.0f))
     }
 }
