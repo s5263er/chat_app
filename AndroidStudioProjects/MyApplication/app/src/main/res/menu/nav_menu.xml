@@ -15,5 +15,5 @@
         android:icon="@drawable/ic_baseline_settings_24" />
     <item android:id="@+id/menu_story"
         android:title="Stories"
-        android:icon="@drawable/ic_baseline_group_add_24" />
+        android:icon="@drawable/ic_baseline_camera_enhance_24" />
 </menu>

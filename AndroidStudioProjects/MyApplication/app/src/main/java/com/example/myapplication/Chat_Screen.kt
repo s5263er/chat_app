@@ -2,6 +2,7 @@ package com.example.myapplication
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -9,6 +10,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.startActivity
@@ -95,9 +99,67 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
             sendMsgToFirebase()
         }
         select_photo_chat.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, 0)
+            val builder = AlertDialog.Builder(this)
+
+            val arrayAdapter = ArrayAdapter<String>(
+                    this,
+                    android.R.layout.select_dialog_singlechoice)
+            arrayAdapter.add("Send Image")
+            arrayAdapter.add("Send Current Location")
+            arrayAdapter.add("Send PDF")
+
+            builder.setTitle("Select One Option")
+
+            builder.setAdapter( arrayAdapter
+            ) { _, i ->
+                if (i == 0){
+                    val intent = Intent(Intent.ACTION_PICK)
+                    intent.type = "image/*"
+                    startActivityForResult(intent, 0)
+                }
+
+                if (i == 1){
+                    fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+
+                    if (ActivityCompat.checkSelfPermission(
+                                    this,
+                                    Manifest.permission.ACCESS_FINE_LOCATION
+                            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                                    this,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                            ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                                        android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        } else {
+                            // No explanation needed, we can request the permission.
+                            ActivityCompat.requestPermissions(this,
+                                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                                    0)
+                        }
+                    }
+                    else{
+                        fusedLocationClient.lastLocation
+                                .addOnSuccessListener { location : Location? ->
+                                    Log.d("location","${location.toString()},${location?.latitude}")
+                                    sendGPS(location!!.latitude,location!!.longitude)
+                                    Log.d("location","girdik4")
+                                }
+                        fusedLocationClient.lastLocation.addOnFailureListener {
+                            Log.d("location bad","${it.toString()}, ${it.message}")
+                        }
+                    }
+                }
+
+                if (i == 2){
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "application/pdf"
+                    startActivityForResult(Intent.createChooser(intent, "Select File Documents"),440)
+                }
+            }
+            builder.show()
+
         }
         adapter.setOnItemClickListener { item, view ->
             Log.d("adapter","click girdi")
@@ -123,49 +185,24 @@ class Chat_Screen : AppCompatActivity(), OnMapReadyCallback {
             }
 
 
-        send_location.setOnClickListener {
-            Log.d("location","girdik")
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                } else {
-                    // No explanation needed, we can request the permission.
-                    ActivityCompat.requestPermissions(this,
-                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                        0)
-                }
-            }
-            else{
-                fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location : Location? ->
-                        Log.d("location","${location.toString()},${location?.latitude}")
-                        sendGPS(location!!.latitude,location!!.longitude)
-                        Log.d("location","girdik4")
-                    }
-                fusedLocationClient.lastLocation.addOnFailureListener {
-                    Log.d("location bad","${it.toString()}, ${it.message}")
-                }
-            }
-
-
-
-
-
-
-        }
 
 
         chatListener()
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.chat_to_menu -> {
+                val intent = Intent(this, com.example.myapplication.Menu::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_chat, menu)
+        return super.onCreateOptionsMenu(menu)
     }
     val adapter = GroupAdapter<GroupieViewHolder>()
     private fun local(latitudeFinal: String, longitudeFinal: String): String {
