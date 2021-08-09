@@ -57,6 +57,7 @@ class Register: AppCompatActivity()
             val intent = Intent(this, select_photo::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+            finish()
 
             }
             .addOnFailureListener {

@@ -52,10 +52,10 @@ class Menu : AppCompatActivity() {
                     finish()
                 }
                 R.id.menu_settings ->{
-                    FirebaseAuth.getInstance().signOut()
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, settings_Page::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
+                    finish()
                 }
                 R.id.menu_story -> {
                     Log.d("story","girdik")
@@ -222,22 +222,22 @@ class Menu : AppCompatActivity() {
 
            // val timer = DateFormat.getDateInstance().format(time)
             val timer = getDate(chatMsg.time,"dd/MM/yyyy")
-            if(minutes < 10 && hours >= 10){
+            if(minutes < 10 && hours+3 >= 10){
                 val saatci = "${hours+3}:0$minutes"
                 val rolex = "$timer $saatci"
                 viewHolder.itemView.latest_msg_time.text = rolex.toString()
             }
-            else if(hours < 10 && minutes >= 10){
+            else if(hours+3 < 10 && minutes >= 10){
                 val saatci = "0${hours+3}:$minutes"
                 val rolex = "$timer $saatci"
                 viewHolder.itemView.latest_msg_time.text = rolex.toString()
             }
-            else if(hours >= 10 && minutes >= 10){
+            else if(hours+3 >= 10 && minutes >= 10){
                 val saatci = "${hours+3}:$minutes"
                 val rolex = "$timer $saatci"
                 viewHolder.itemView.latest_msg_time.text = rolex.toString()
             }
-            else if(hours < 10 && minutes < 10) {
+            else if(hours+3 < 10 && minutes < 10) {
                 val saatci = "0${hours+3}:0$minutes"
                 val rolex = "$timer $saatci"
                 viewHolder.itemView.latest_msg_time.text = rolex.toString()

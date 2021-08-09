@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.core.animation.doOnEnd
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.chat_row_img.view.*
 import kotlinx.android.synthetic.main.story_splash_screen_layout.*
@@ -41,11 +42,20 @@ class story_splash_screen : AppCompatActivity() {
 
         story_image.alpha = 0f
         ObjectAnimator.ofInt(story_countdown,"progress",currProgress).setDuration(5000).start()
-        story_image.animate().setDuration(5200).alpha(1f).withEndAction {
+        story_image.animate().setDuration(5000).alpha(1f).withEndAction {
             val intent = Intent(this,Menu::class.java)
+            val intent2 = Intent(this,StoryActivity::class.java)
             overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right)
-            startActivity(intent)
-            finish()
+            val uid = FirebaseAuth.getInstance().uid
+            if(uid == userTo?.uid){
+                startActivity(intent2)
+                finish()
+            }
+            else{
+                startActivity(intent)
+                finish()
+            }
+
 
         }
 

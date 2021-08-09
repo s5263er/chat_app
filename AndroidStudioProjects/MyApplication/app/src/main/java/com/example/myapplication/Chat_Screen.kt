@@ -446,22 +446,22 @@ private fun clockCu(chatMsg: Message) : String{
     // val timer = DateFormat.getDateInstance().format(time)
     val timer = getDate(chatMsg.time,"dd/MM/yyyy")
 
-    if(minutes < 10 && hours >= 10){
+    if(minutes < 10 && hours+3 >= 10){
         val saatci = "${hours+3}:0$minutes"
         val rolex = "$timer $saatci"
         return rolex.toString()
     }
-    else if(hours < 10 && minutes >= 10){
+    else if(hours+3 < 10 && minutes >= 10){
         val saatci = "0${hours+3}:$minutes"
         val rolex = "$timer $saatci"
         return rolex.toString()
     }
-    else if(hours >= 10 && minutes >= 10){
+    else if(hours+3 >= 10 && minutes >= 10){
         val saatci = "${hours+3}:$minutes"
         val rolex = "$timer $saatci"
         return rolex.toString()
     }
-    else if(hours < 10 && minutes < 10) {
+    else if(hours+3 < 10 && minutes < 10) {
         val saatci = "0${hours+3}:0$minutes"
         val rolex = "$timer $saatci"
         return rolex.toString()
