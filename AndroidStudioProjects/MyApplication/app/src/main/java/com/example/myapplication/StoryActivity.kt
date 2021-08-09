@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_settings__page.*
 import kotlinx.android.synthetic.main.activity_story.*
 import kotlinx.android.synthetic.main.latest_msg_row.view.*
+import kotlinx.android.synthetic.main.menu_layout.*
 import kotlinx.android.synthetic.main.select_photo.*
 import java.util.*
 
@@ -32,6 +33,7 @@ class StoryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_story)
         retrieveUsers()
         supportActionBar?.title = "Share your stories"
+        bottom_navigation_story.selectedItemId = R.id.menu_story
 
         bottom_navigation_story.setOnItemSelectedListener {
             when(it.itemId){

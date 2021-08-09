@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val pref = getPreferences(Context.MODE_PRIVATE)
         val email = pref.getString("Email","")
+        supportActionBar?.title = "Login"
 
         login_username.setText(email)
         val pass = pref.getString("Password","")

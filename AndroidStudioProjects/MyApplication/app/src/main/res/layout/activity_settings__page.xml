@@ -76,8 +76,8 @@
         android:layout_alignParentBottom="true"
 
         app:itemBackground="@color/black"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        app:itemTextColor="@drawable/nav_colors_bottom"
+        app:itemIconTint="@drawable/nav_colors_bottom"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -29,7 +29,7 @@ class Register: AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register_layout)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "ChatteCep"
+        supportActionBar?.title = "Register"
         supportActionBar?.setDisplayShowTitleEnabled(true)
 
 

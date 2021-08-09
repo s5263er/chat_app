@@ -23,7 +23,10 @@ class settings_Page : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings__page)
         supportActionBar?.title = "Settings"
+        bottom_navigation_settings.selectedItemId = R.id.menu_settings
+
         bottom_navigation_settings.setOnItemSelectedListener {
+
             when (it.itemId) {
                 R.id.menu_search1 -> {
                     val intent = Intent(this, new_message::class.java)
@@ -45,6 +48,8 @@ class settings_Page : AppCompatActivity() {
             }
             true
         }
+
+
         val email: String = FirebaseAuth.getInstance().currentUser?.email.toString()
 
         retrieveUsers()

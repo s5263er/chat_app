@@ -38,8 +38,11 @@ class Menu : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.menu_layout)
+        bottom_navigation.selectedItemId = R.id.menu_chat
+
 
         bottom_navigation.setOnItemSelectedListener {
+
             when(it.itemId){
                 R.id.menu_search1 -> {
                     val intent = Intent(this, new_message::class.java)
@@ -68,7 +71,7 @@ class Menu : AppCompatActivity() {
         }
         listview_menu.adapter = adapter
         listview_menu.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        supportActionBar?.title = "Chat Inn"
+        supportActionBar?.title = "Latest Messages"
 
 
         adapter.setOnItemClickListener { item, view ->

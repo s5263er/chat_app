@@ -21,7 +21,7 @@ class select_photo : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.select_photo)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "ChatteCep"
+        supportActionBar?.title = "Profile Picture"
         supportActionBar?.setDisplayShowTitleEnabled(true)
 
         select_photo_button.setOnClickListener {
