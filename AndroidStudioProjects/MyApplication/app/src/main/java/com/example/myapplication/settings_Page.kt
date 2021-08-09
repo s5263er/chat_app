@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -51,6 +52,17 @@ class settings_Page : AppCompatActivity() {
         settings_change_pass.setOnClickListener {
             FirebaseAuth.getInstance().sendPasswordResetEmail(email)
             Toast.makeText(this, "Password change request sent to ${email}", Toast.LENGTH_LONG).show()
+        }
+        settings_security.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                    .setTitle("Security")
+                    .setMessage("Your data is secure with SHA-1 hashing algorithm")
+                    .setIcon(R.drawable.ic_baseline_security_24)
+                    .setCancelable(true)
+                    .setNegativeButton("Cool") { dialog, which ->
+                        dialog.cancel()
+                    }
+                    .show()
         }
     }
 
